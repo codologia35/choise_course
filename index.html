@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кодология — тест-опрос для подбора курса</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    window.CODOLOGIA_BACKEND_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_EXEC_URL_HERE";
+  </script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <span class="shape circle circle-1 pink"></span>
+    <span class="shape square square-1 blue striped-blue"></span>
+    <span class="shape square square-2 yellow striped-pink"></span>
+    <span class="shape circle circle-2 lilac"></span>
+    <span class="shape brace brace-1 blue" data-symbol="{"></span>
+    <span class="shape brace brace-2 pink" data-symbol="}"></span>
+    <span class="shape stripe stripe-1 lilac"></span>
+  </div>
+
+  <div class="container">
+    <section class="hero">
+      <div class="hero-layout">
+        <div>
+          <div class="brand-line">IT-школа Кодология · подбор курса</div>
+          <h1>Определите подходящий курс за 3 минуты</h1>
+          <p>Форма для родителей и учеников. После отправки вы увидите рекомендации, а заявка сохранится в таблице.</p>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-pill yellow">Результат сразу после теста</div>
+          <div class="hero-pill pink">Рекомендации по возрасту и навыкам</div>
+          <div class="hero-pill lilac">Сохранение в Google Sheets</div>
+        </div>
+      </div>
+    </section>
+
+    <form id="quizForm" class="quiz-form" autocomplete="on" novalidate>
+      <section class="card">
+        <h2>Данные родителя</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label for="parentName">Имя и фамилия родителя</label>
+            <input id="parentName" name="parentName" type="text" required />
+          </div>
+          <div class="field">
+            <label for="phone">Телефон</label>
+            <input id="phone" name="phone" type="tel" placeholder="+7 (___) ___-__-__" required />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="name@example.com" />
+          </div>
+          <div class="field">
+            <label for="vk">Ссылка VK / Telegram / другое</label>
+            <input id="vk" name="vk" type="text" placeholder="https://..." />
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Данные ребёнка</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label for="childName">Имя и фамилия ребёнка</label>
+            <input id="childName" name="childName" type="text" required />
+          </div>
+          <div class="field">
+            <label for="birthDate">Дата рождения</label>
+            <input id="birthDate" name="birthDate" type="date" required />
+          </div>
+          <div class="field">
+            <label for="grade">Класс ребёнка</label>
+            <input id="grade" name="grade" type="text" />
+            <small>Класс нужно указывать на момент начала обучения. Учитываем, что в школу могли пойти в 6, 7 или 8 лет.</small>
+          </div>
+          <div class="field">
+            <label for="startMode">Когда начинается обучение</label>
+            <select id="startMode" name="startMode">
+              <option value="nearest">Ближайший старт</option>
+              <option value="summer2026">Старт с лета 2026 — GameLab</option>
+              <option value="summerPython1">Старт с лета 2026 — Python</option>
+              <option value="summerPython2">Старт с августа 2026 — Python</option>
+              <option value="autumn2026">Старт с нового учебного года 2026/2027</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="branch">Выберите группу, которую хотите посещать</label>
+            <select id="branch" name="branch">
+              <option value="">Не указывать</option>
+              <option value="Предв. запись на 2026/2027 уч. год, Ленинградская 150А">Предв. запись на 2026/2027 уч. год, Ленинградская 150А</option>
+              <option value="Предв. запись на 2026/2027 уч. год, Ленина 11">Предв. запись на 2026/2027 уч. год, Ленина 11</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Опыт обучения</h2>
+        <p class="section-subtitle">Если ребёнок уже учился в IT, укажите это здесь. Ниже появятся нужные поля.</p>
+        <div class="field">
+          <label for="studyHistory">Опыт обучения ребёнка</label>
+          <select id="studyHistory" name="studyHistory">
+            <option value="">Выберите вариант</option>
+            <option value="never">Никогда не обучался программированию</option>
+            <option value="codologia">Уже обучался в Кодологии</option>
+            <option value="other">Обучался в другой IT-школе</option>
+          </select>
+        </div>
+        <div id="codologiaCoursesWrapper" class="conditional-field hidden">
+          <label>Какие курсы Кодологии уже проходил ребёнок?</label>
+          <div id="codologiaCoursesList" class="multi-panel standalone"></div>
+          <div id="pickedCourses" class="picked-list">Пока ничего не выбрано</div>
+        </div>
+        <div id="otherSchoolWrapper" class="conditional-field hidden">
+          <div class="form-grid">
+            <div class="field">
+              <label for="otherSchoolName">Название школы</label>
+              <input type="text" id="otherSchoolName" name="otherSchoolName" />
+            </div>
+            <div class="field">
+              <label for="otherSchoolCourses">Какие курсы проходил?</label>
+              <input type="text" id="otherSchoolCourses" name="otherSchoolCourses" placeholder="Например: Scratch, Python, сайты, 3D" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Навыки</h2>
+        <div class="chips checkbox-group" data-group="skills">
+          <label><input type="checkbox" name="skills" value="computer_basics"><div><strong>Уверенно пользуется компьютером</strong><span>Умеет работать с компьютером без посторонней помощи.</span></div></label>
+          <label><input type="checkbox" name="skills" value="files_folders"><div><strong>Работает с файлами и папками</strong><span>Создаёт, перемещает и упорядочивает файлы.</span></div></label>
+          <label><input type="checkbox" name="skills" value="word"><div><strong>Word / документы</strong><span>Создаёт и оформляет текстовые документы.</span></div></label>
+          <label><input type="checkbox" name="skills" value="excel"><div><strong>Excel / таблицы</strong><span>Пользуется таблицами и простыми формулами.</span></div></label>
+          <label><input type="checkbox" name="skills" value="powerpoint"><div><strong>PowerPoint / презентации</strong><span>Создаёт слайды и проекты.</span></div></label>
+          <label><input type="checkbox" name="skills" value="scratch"><div><strong>Scratch</strong><span>Создавал проекты в визуальной среде программирования.</span></div></label>
+          <label><input type="checkbox" name="skills" value="python"><div><strong>Python</strong><span>Знаком с синтаксисом и базовыми программами.</span></div></label>
+          <label><input type="checkbox" name="skills" value="javascript"><div><strong>JavaScript</strong><span>Пробовал писать код для сайтов.</span></div></label>
+          <label><input type="checkbox" name="skills" value="html_css"><div><strong>HTML/CSS</strong><span>Создавал и оформлял веб-страницы.</span></div></label>
+          <label><input type="checkbox" name="skills" value="vue"><div><strong>Vue.js</strong><span>Работал с современными веб-фреймворками.</span></div></label>
+          <label><input type="checkbox" name="skills" value="java"><div><strong>Java</strong><span>Изучал объектно-ориентированное программирование.</span></div></label>
+          <label><input type="checkbox" name="skills" value="android"><div><strong>Android</strong><span>Создавал мобильные приложения.</span></div></label>
+          <label><input type="checkbox" name="skills" value="blender"><div><strong>Blender</strong><span>Моделировал и анимировал 3D-объекты.</span></div></label>
+          <label><input type="checkbox" name="skills" value="unity"><div><strong>Unity</strong><span>Разрабатывал игровые сцены и механики.</span></div></label>
+          <label><input type="checkbox" name="skills" value="3d"><div><strong>3D-моделирование</strong><span>Создавал объёмные модели.</span></div></label>
+          <label><input type="checkbox" name="skills" value="ai"><div><strong>Нейросети</strong><span>Использовал инструменты искусственного интеллекта.</span></div></label>
+          <label><input type="checkbox" name="skills" value="math_logic"><div><strong>Математика и логика</strong><span>Любит решать логические и математические задачи.</span></div></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Интересы и пожелания</h2>
+        <p class="section-subtitle">Для математики выберите подходящий вариант: интерес к логике и задачам или помощь по школьной программе.</p>
+        <div class="chips checkbox-group" data-group="interests">
+          <label><input type="checkbox" name="interests" value="math_olympiad"><div><strong>Математика и логика</strong><span>Нравятся задачи, рассуждения и олимпиадные форматы.</span></div></label>
+          <label><input type="checkbox" name="interests" value="math_help"><div><strong>Нужна помощь по математике</strong><span>Нужно подтянуть школьную программу и уверенно решать задания.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Компьютерная грамотность"><div><strong>Компьютер и офисные программы</strong><span>Хочет уверенно работать на компьютере, в документах и таблицах.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Scratch"><div><strong>Scratch (блочное программирование)</strong><span>Хочет собирать код из блоков и делать простые проекты без набора текста.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Python"><div><strong>Программирование на Python</strong><span>Интересно писать код, решать задачи и создавать программы.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Сайты"><div><strong>Создание сайтов</strong><span>Хочет делать страницы, оформлять их и добавлять интерактивность.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Приложения"><div><strong>Мобильные приложения</strong><span>Интересно делать полезные программы для телефона и придумывать интерфейсы.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Игры для компьютера"><div><strong>Игры для компьютера</strong><span>Хочет делать игры для ПК: уровни, управление, персонажей и механику.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Игры для телефона"><div><strong>Мобильные игры</strong><span>Интересно создавать именно игры, которые запускаются на телефоне.</span></div></label>
+          <label><input type="checkbox" name="interests" value="3D"><div><strong>3D и графика</strong><span>Нравится моделировать, рисовать объекты и работать с визуалом.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Blender"><div><strong>3D-моделирование в Blender</strong><span>Хочет создавать модели, сцены и анимацию.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Unity"><div><strong>Создание игр в Unity</strong><span>Интересно не просто играть, а делать 2D/3D игры, сцены, персонажей и механику.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Нейросети"><div><strong>Нейросети и ИИ</strong><span>Хочет знакомиться с современными инструментами искусственного интеллекта.</span></div></label>
+          <label><input type="checkbox" name="interests" value="Minecraft"><div><strong>Minecraft и модификации</strong><span>Хочет делать дополнения к игре, использовать код и 3D-редактор.</span></div></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Дополнительно</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label for="plan">План на ближайшее время</label>
+            <select id="plan" name="plan">
+              <option value="">Не указывать</option>
+              <option value="Пробный интерес к IT и выбор направления">Пробный интерес к IT и выбор направления</option>
+              <option value="Хочу учиться регулярно в течение учебного года">Хочу учиться регулярно в течение учебного года</option>
+              <option value="Нужен летний экспресс-курс">Нужен летний экспресс-курс</option>
+              <option value="Интересует летняя студия разработки игр">Интересует летняя студия разработки игр</option>
+              <option value="Нужен курс по сайтам и веб-приложениям">Нужен курс по сайтам и веб-приложениям</option>
+              <option value="Нужен курс по мобильным приложениям">Нужен курс по мобильным приложениям</option>
+              <option value="Нужен курс по 3D и графике">Нужен курс по 3D и графике</option>
+              <option value="Свой вариант">Свой вариант</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pfdo">ПФДО</label>
+            <select id="pfdo" name="pfdo">
+              <option value="">Не указывать</option>
+              <option value="Да">Да, договор будет через систему ПФДО</option>
+              <option value="Нет">Нет, сертификат не буду использовать</option>
+              <option value="Свой вариант">Свой вариант</option>
+            </select>
+          </div>
+        </div>
+        <div class="field conditional-field hidden" id="pfdoCommentWrap">
+          <label for="pfdoComment">Комментарий по ПФДО</label>
+          <input id="pfdoComment" name="pfdoComment" type="text" />
+        </div>
+        <div class="field comment-field">
+          <label for="wishes">Пожелания / замечания</label>
+          <textarea id="wishes" name="wishes" placeholder="Например, любит игры на телефоне, рисует персонажей, интересуется 3D или хочет научиться делать сайты."></textarea>
+        </div>
+        <label class="consent">
+          <input id="consent" name="consent" type="checkbox" required />
+          <span>Я даю согласие на обработку моих персональных данных и персональных данных моего ребёнка в соответствии с Политикой обработки персональных данных и Согласием на обработку персональных данных.</span>
+        </label>
+      </section>
+
+      <button type="submit" id="submitBtn" class="link-button">Подобрать курс</button>
+    </form>
+
+    <div id="resultRoot" class="result-root"></div>
+  </div>
+</body>
+</html>
