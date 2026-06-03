@@ -455,20 +455,25 @@
   }
 
   async function sendToBackend(payload) {
-    if (!BACKEND_URL || /PASTE_YOUR_APPS_SCRIPT_WEB_APP_EXEC_URL_HERE/.test(BACKEND_URL)) return;
-    try {
-      const body = new URLSearchParams(flattenForTransport(payload)).toString();
-      await fetch(BACKEND_URL, {
-        method: "POST",
-        mode: "no-cors",
-        keepalive: true,
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body
-      });
-    } catch (err) {
-      console.warn("Backend submit failed:", err);
-    }
+  if (!BACKEND_URL || /PASTE_YOUR_APPS_SCRIPT_WEB_APP_EXEC_URL_HERE/.test(BACKEND_URL)) return;
+
+  try {
+    const body = new URLSearchParams(flattenForTransport(payload)).toString();
+
+    await fetch(BACKEND_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body
+    });
+
+    console.log("Форма отправлена");
+  } catch (err) {
+    console.error(err);
   }
+}
 
   async function submitQuiz() {
     const data = collectFormData();
